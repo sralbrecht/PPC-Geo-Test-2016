@@ -8,32 +8,38 @@ GET DATA
            'FROM PRD_DWH_VIEW.Customer_V CU ' +
            'LEFT JOIN PRD_DWH_VIEW.CUSTOMER_PURCH_DATES_V CPD ' +
               'ON CU.CUSTOMER = CPD.CUSTOMER ' +
-           'LEFT JOIN (SELECT SIA.SOLD_TO CUSTOMER, COUNT(DISTINCT SIA.BILL_NUM) ORDERS, SUM(SIA.SUBTOTAL_2) SALES '+
+           'LEFT JOIN (SELECT SIA.SOLD_TO CUSTOMER, COUNT(DISTINCT SIA.S_ORD_NUM) ORDERS, SUM(SIA.SUBTOTAL_2) SALES '+
                              'FROM PRD_DWH_VIEW.Sales_Invoice_V SIA '+
                              'WHERE '+
                                   '  SIA.ZZCOMFLG = ''Y'' ' +
-                                  '  AND SIA.BILL_DATE >= {d ''2016-06-15''} '+
-                                  '  AND SIA.BILL_DATE <= {d ''2016-06-30''} '+
+                                  '  AND SIA.ZORD_DATE >= {d ''2016-06-15''} '+
+                                  '  AND SIA.ZORD_DATE <= {d ''2016-06-30''} '+
+                                  '  AND SIA.SHIP_COND <> ''RE'' ' +
+                                  '  AND SIA.SUBTOTAL_2 > 0 ' +
                               'GROUP BY 1) A ' +
            'ON CU.CUSTOMER = A.CUSTOMER '+
-           'LEFT JOIN (SELECT SIB.SOLD_TO CUSTOMER, COUNT(DISTINCT SIB.BILL_NUM) ORDERS, SUM(SIB.SUBTOTAL_2) SALES '+
+           'LEFT JOIN (SELECT SIB.SOLD_TO CUSTOMER, COUNT(DISTINCT SIB.S_ORD_NUM) ORDERS, SUM(SIB.SUBTOTAL_2) SALES '+
                              'FROM PRD_DWH_VIEW.Sales_Invoice_V SIB '+
                              'WHERE '+
                                   '  SIB.ZZCOMFLG = ''Y'' ' +
-                                  '  AND SIB.BILL_DATE >= {d ''2016-07-01''} '+
-                                  '  AND SIB.BILL_DATE <= {d ''2016-07-31''} '+
+                                  '  AND SIB.ZORD_DATE >= {d ''2016-07-01''} '+
+                                  '  AND SIB.ZORD_DATE <= {d ''2016-07-31''} '+
+                                  '  AND SIB.SHIP_COND <> ''RE'' ' +
+                                  '  AND SIB.SUBTOTAL_2 > 0 ' +
                               'GROUP BY 1) B ' +
            'ON CU.CUSTOMER = B.CUSTOMER '+
-           'LEFT JOIN (SELECT SIC.SOLD_TO CUSTOMER, COUNT(DISTINCT SIC.BILL_NUM) ORDERS, SUM(SIC.SUBTOTAL_2) SALES '+
+           'LEFT JOIN (SELECT SIC.SOLD_TO CUSTOMER, COUNT(DISTINCT SIC.S_ORD_NUM) ORDERS, SUM(SIC.SUBTOTAL_2) SALES '+
                              'FROM PRD_DWH_VIEW.Sales_Invoice_V SIC '+
                              'WHERE '+
                                   '  SIC.ZZCOMFLG = ''Y'' ' +
-                                  '  AND SIC.BILL_DATE >= {d ''2016-08-01''} '+
-                                  '  AND SIC.BILL_DATE <= {d ''2016-08-17''} '+
+                                  '  AND SIC.ZORD_DATE >= {d ''2016-08-01''} '+
+                                  '  AND SIC.ZORD_DATE <= {d ''2016-08-10''} '+
+                                  '  AND SIC.SHIP_COND <> ''RE'' ' +
+                                  '  AND SIC.SUBTOTAL_2 > 0 ' +
                               'GROUP BY 1) C ' +
            'ON CU.CUSTOMER = C.CUSTOMER '+
-             'WHERE CU.ZZIPCD5 <> '''' AND ' +
-                          'CU.ACCNT_GRP = ''0001'' '.
+           'WHERE CU.ZZIPCD5 <> '''' AND ' +
+                         'CU.ACCNT_GRP = ''0001'' '.
 CACHE.
 EXE.
 
@@ -54,27 +60,33 @@ GET DATA
                              'FROM PRD_DWH_VIEW.Sales_Invoice_V SIA '+
                              'WHERE '+
                                   '  SIA.ZZCOMFLG = ''Y'' ' +
-                                  '  AND SIA.BILL_DATE >= {d ''2016-06-15''} '+
-                                  '  AND SIA.BILL_DATE <= {d ''2016-06-30''} '+
+                                  '  AND SIA.ZORD_DATE >= {d ''2016-06-15''} '+
+                                  '  AND SIA.ZORD_DATE <= {d ''2016-06-30''} '+
                                   '  AND SIA.SALES_OFF = ''E01'' ' +
+                                  '  AND SIA.SHIP_COND <> ''RE'' ' +
+                                  '  AND SIA.SUBTOTAL_2 > 0 ' +
                               'GROUP BY 1) A ' +
            'ON CU.CUSTOMER = A.CUSTOMER '+
            'LEFT JOIN (SELECT SIB.SOLD_TO CUSTOMER, COUNT(DISTINCT SIB.S_ORD_NUM) ORDERS, SUM(SIB.SUBTOTAL_2) SALES '+
                              'FROM PRD_DWH_VIEW.Sales_Invoice_V SIB '+
                              'WHERE '+
                                   '  SIB.ZZCOMFLG = ''Y'' ' +
-                                  '  AND SIB.BILL_DATE >= {d ''2016-07-01''} '+
-                                  '  AND SIB.BILL_DATE <= {d ''2016-07-31''} '+
+                                  '  AND SIB.ZORD_DATE >= {d ''2016-07-01''} '+
+                                  '  AND SIB.ZORD_DATE <= {d ''2016-07-31''} '+
                                   '  AND SIB.SALES_OFF = ''E01'' ' +
+                                  '  AND SIB.SHIP_COND <> ''RE'' ' +
+                                  '  AND SIB.SUBTOTAL_2 > 0 ' +
                               'GROUP BY 1) B ' +
            'ON CU.CUSTOMER = B.CUSTOMER '+
            'LEFT JOIN (SELECT SIC.SOLD_TO CUSTOMER, COUNT(DISTINCT SIC.S_ORD_NUM) ORDERS, SUM(SIC.SUBTOTAL_2) SALES '+
                              'FROM PRD_DWH_VIEW.Sales_Invoice_V SIC '+
                              'WHERE '+
                                   '  SIC.ZZCOMFLG = ''Y'' ' +
-                                  '  AND SIC.BILL_DATE >= {d ''2016-08-01''} '+
-                                  '  AND SIC.BILL_DATE <= {d ''2016-08-17''} '+
+                                  '  AND SIC.ZORD_DATE >= {d ''2016-08-01''} '+
+                                  '  AND SIC.ZORD_DATE <= {d ''2016-08-10''} '+
                                   '  AND SIC.SALES_OFF = ''E01'' ' +
+                                  '  AND SIC.SHIP_COND <> ''RE'' ' +
+                                  '  AND SIC.SUBTOTAL_2 > 0 ' +
                               'GROUP BY 1) C ' +
            'ON CU.CUSTOMER = C.CUSTOMER '+
            'WHERE CU.ZZIPCD5 <> '''' AND ' +
@@ -113,42 +125,51 @@ GET DATA
   /CONNECT='DSN=Teradata;DB=PRD_DWH_VIEW;PORT=1025;DBCNL=10.4.165.29;UID=spss;PWD=$-<~*x#N3@!/-!!+'
   /SQL='SELECT DISTINCT SI.SOLD_TO CUSTOMER, SI.ZSHIPZIP, ' +
              '  A.ORDERS JUNE_ORDERS, A.SALES JUNE_SALES, B.ORDERS JULY_ORDERS, B.SALES JULY_SALES, C.ORDERS AUG_ORDERS, C.SALES AUG_SALES ' +
-            'FROM PRD_DWH_VIEW.Sales_Invoice_Summary_V SI ' +
+            'FROM PRD_DWH_VIEW.Sales_Invoice_V SI ' +
                  'LEFT JOIN (SELECT SIA.SOLD_TO CUSTOMER, SIA.ZSHIPZIP, COUNT(DISTINCT SIA.S_ORD_NUM) ORDERS, SUM(SIA.SUBTOTAL_2) SALES '+
                                    'FROM PRD_DWH_VIEW.Sales_Invoice_V SIA '+
                                    'WHERE '+
                                         '  SIA.ZZCOMFLG = ''Y'' ' +
-                                        '  AND SIA.BILL_DATE >= {d ''2016-06-15''} '+
-                                        '  AND SIA.BILL_DATE <= {d ''2016-06-30''} '+
+                                        '  AND SIA.ZORD_DATE >= {d ''2016-06-15''} '+
+                                        '  AND SIA.ZORD_DATE <= {d ''2016-06-30''} '+
                                         '  AND SIA.SALES_OFF = ''E01'' ' +
                                         '  AND SIA.SOLD_TO = ''0222222226'' ' +
+                                        '  AND SIA.SHIP_COND <> ''RE'' ' +
+                                        '  AND SIA.SUBTOTAL_2 > 0 ' +
                                     'GROUP BY 1,2) A ' +
                  'ON SI.SOLD_TO = A.CUSTOMER AND SI.ZSHIPZIP = A.ZSHIPZIP '+
                  'LEFT JOIN (SELECT SIB.SOLD_TO CUSTOMER, SIB.ZSHIPZIP, COUNT(DISTINCT SIB.S_ORD_NUM) ORDERS, SUM(SIB.SUBTOTAL_2) SALES '+
                                    'FROM PRD_DWH_VIEW.Sales_Invoice_V SIB '+
                                    'WHERE '+
                                         '  SIB.ZZCOMFLG = ''Y'' ' +
-                                        '  AND SIB.BILL_DATE >= {d ''2016-07-01''} '+
-                                        '  AND SIB.BILL_DATE <= {d ''2016-07-31''} '+
+                                        '  AND SIB.ZORD_DATE >= {d ''2016-07-01''} '+
+                                        '  AND SIB.ZORD_DATE <= {d ''2016-07-31''} '+
                                         '  AND SIB.SALES_OFF = ''E01'' ' +
                                         '  AND SIB.SOLD_TO = ''0222222226'' ' +
+                                        '  AND SIB.SHIP_COND <> ''RE'' ' +
+                                        '  AND SIB.SUBTOTAL_2 > 0 ' +
                                     'GROUP BY 1,2) B ' +
                  'ON SI.SOLD_TO = B.CUSTOMER AND SI.ZSHIPZIP = B.ZSHIPZIP '+
                  'LEFT JOIN (SELECT SIC.SOLD_TO CUSTOMER, SIC.ZSHIPZIP, COUNT(DISTINCT SIC.S_ORD_NUM) ORDERS, SUM(SIC.SUBTOTAL_2) SALES '+
                                    'FROM PRD_DWH_VIEW.Sales_Invoice_V SIC '+
                                    'WHERE '+
                                         '  SIC.ZZCOMFLG = ''Y'' ' +
-                                        '  AND SIC.BILL_DATE >= {d ''2016-08-01''} '+
-                                        '  AND SIC.BILL_DATE <= {d ''2016-08-17''} '+
+                                        '  AND SIC.ZORD_DATE >= {d ''2016-08-01''} '+
+                                        '  AND SIC.ZORD_DATE <= {d ''2016-08-10''} '+
                                         '  AND SIC.SALES_OFF = ''E01'' ' +
                                         '  AND SIC.SOLD_TO = ''0222222226'' ' +
+                                        '  AND SIC.SHIP_COND <> ''RE'' ' +
+                                        '  AND SIC.SUBTOTAL_2 > 0 ' +
                                     'GROUP BY 1,2) C ' +
                  'ON SI.SOLD_TO = C.CUSTOMER AND SI.ZSHIPZIP = C.ZSHIPZIP '+
-            'WHERE SI.BILL_DATE >= {d ''2016-06-15''}  AND ' +
-                          'SI.BILL_DATE <= {d ''2016-08-17''} AND ' +
+            'WHERE SI.ZORD_DATE >= {d ''2016-06-15''}  AND ' +
+                          'SI.ZORD_DATE <= {d ''2016-08-10''} AND ' +
                           'SI.SALES_OFF = ''E01'' AND ' +
                           'SI.SOLD_TO = ''0222222226'' AND ' +
-                          'SI.ZZCOMFLG = ''Y'' '.
+                          'SI.ZZCOMFLG = ''Y'' AND ' +
+                          'SI.SHIP_COND <> ''RE'' AND ' +
+                          'SI.SUBTOTAL_2 > 0 '.
+
 CACHE.
 EXE.
 
@@ -230,28 +251,12 @@ EXE.
 DATASET CLOSE ZTD.
 
 *Filter out any accounts which were identified as having high avg monthly orders or unstable order history.
-GET FILE = '/usr/spss/userdata/Albrecht/PPC Geo/Weekly Updates/Five Year Orders through May16 by Account for Target Markets.sav'
+GET FILE = '/usr/spss/userdata/Albrecht/PPC Geo/Weekly Updates/Final Analysis/June 11 to May 16 Sales and Orders by Account from TD.sav'
    /KEEP account ZIPCODE Order_Outlier Stable_Order_Outlier.
 CACHE.
 EXE.
 
 DATASET NAME ORD_OUT.
-
-*Filter out any accounts whose order activity during the forecast period was much lower than what we see in Teradata.
-GET FILE = '/usr/spss/userdata/Albrecht/PPC Geo/Weekly Updates/Final Analysis/Accounts in Results Missing from GIS Forecast.sav'
-   /KEEP account ZIPCODE_TD Missing_FC
-   /RENAME ZIPCODE_TD = ZIPCODE.
-CACHE.
-EXE.
-
-DATASET NAME MFC.
-
-*Filter out any accounts which were found as outliers during the test period.
-GET FILE = '/usr/spss/userdata/Albrecht/PPC Geo/Weekly Updates/Final Analysis/GIS and GCOM Order Outliers.sav'.
-CACHE.
-EXE.
-
-DATASET NAME TP_OUT.
 
 DATASET ACTIVATE SLS_BY_AZ.
 
@@ -266,34 +271,23 @@ SORT CASES BY account(A) ZIPCODE(A).
 MATCH FILES
    /FILE = *
    /TABLE = 'ORD_OUT'
-   /TABLE = 'MFC'
-   /TABLE = 'TP_OUT'
    /BY account ZIPCODE.
 EXE.
 
 DATASET CLOSE ORD_OUT.
-DATASET CLOSE MFC.
-DATASET CLOSE TP_OUT.
 DATASET ACTIVATE SLS_BY_AZ.
 
-RECODE Group(MISSING = 0) /Order_Outlier(MISSING = 0) /Stable_Order_Outlier(MISSING = 0) /Missing_FC(MISSING = 0) /Outlier_Type(MISSING = 0).
+RECODE Group(MISSING = 0) /Order_Outlier(MISSING = 0) /Stable_Order_Outlier(MISSING = 0).
 
-COMPUTE Include_Orders = (CUSTOMER <> '0855313060' AND Order_Outlier = 0 AND Stable_Order_Outlier = 0 AND Missing_FC = 0).
+ * COMPUTE Include_Acq = (ZIPCODE <> '35007' OR (CREATE_DATE <> DATE.MDY(6,13,2016) AND CREATE_DATE <> DATE.MDY(7,11,2016) ) ).
+ * FORMATS Include_Acq(F1.0).
+
+COMPUTE Include_Orders = (CUSTOMER <> '0855313060' AND Order_Outlier = 0 AND Stable_Order_Outlier = 0).
 FORMATS Include_Orders(F1.0).
 EXE.
 
 *Save the resulting file.
-SAVE OUTFILE = '/usr/spss/userdata/Albrecht/PPC Geo/Weekly Updates/Final Analysis/June July and Aug GIS and Gcom Sales and Acquisitions by Account_Aug17.sav'.
-
-*For any accounts which were included in the forecasts but were flagged with unusual order activity during testing replace their orders in June, July, and August.
-IF(Outlier_Type = 2 AND Include_Orders = 1) GC_JUNE_ORDERS = 0.
-IF(Outlier_Type = 2 AND Include_Orders = 1) GC_JULY_ORDERS = 0.
-IF(Outlier_Type = 2 AND Include_Orders = 1) GC_AUG_ORDERS = 0.
-
-IF(Outlier_Type = 3 AND Include_Orders = 1) GC_JUNE_ORDERS = (GC_JUNE_ORDERS + (GC_JUNE_ORDERS * (PCT_DECR/100))).
-IF(Outlier_Type = 3 AND Include_Orders = 1) GC_JULY_ORDERS = (GC_JULY_ORDERS + (GC_JULY_ORDERS * (PCT_DECR/100))).
-IF(Outlier_Type = 3 AND Include_Orders = 1) GC_AUG_ORDERS = (GC_AUG_ORDERS + (GC_AUG_ORDERS * (PCT_DECR/100))).
-EXE.
+SAVE OUTFILE = '/usr/spss/userdata/Albrecht/PPC Geo/Weekly Updates/Final Analysis/June July and Aug GIS and Gcom Sales and Acquisitions by Account_v2.sav'.
 
 *Aggregate the data by DMA and group.
 FILTER BY Include_Orders.
@@ -321,9 +315,14 @@ DATASET ACTIVATE SLS_BY_DMA.
 SORT CASES BY Group(A) DMA(A).
 
 SELECT IF(Group > 0).
+
+ * COMPUTE Include = (DMA <> 'BIRMINGHAM (ANN & TUSC)').
+ * FORMATS Include(F1.0).
 EXE.
 
 ***LOOK AT TOTAL GIS AND GCOM SALES AND ORDERS FOR THE FIRST WEEK OF THE ANALYSIS PERIOD***.
+
+ * FILTER BY Include.
 
 MEANS JUNE_SALES GC_JUNE_SALES JULY_SALES GC_JULY_SALES AUG_SALES GC_AUG_SALES BY Group
    /CELLS SUM.
